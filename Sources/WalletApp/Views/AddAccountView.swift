@@ -270,17 +270,7 @@ struct LiveCardPreview: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Capsule())
                 }
-                HStack {
-                    Text(name).font(.caption2).foregroundColor(.white.opacity(0.5))
-                    Spacer()
-                    Text(currency.rawValue)
-                        .font(.caption2)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
-                        .foregroundColor(.white.opacity(0.8))
-                }
+            }
             .padding(20)
         }
         .aspectRatio(1.56, contentMode: .fit)
