@@ -22,51 +22,31 @@ jobs:
       - name: Generate Xcode Project
         run: xcodegen generate
 
-      # 不签名编译验证
-      - name: Build Test
+      - name: Build for Device (无签名)
         run: |
           xcodebuild build \
             -project WalletApp.xcodeproj \
             -scheme WalletApp \
-            -sdk iphonesimulator \
-            -configuration Debug \
+            -sdk iphoneos \
+            -configuration Release \
+            -derivedDataPath Build/DD \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGNING_ALLOWED=NO \
             DEVELOPMENT_TEAM= \
             2>&1
 
-      - name: Install Profile
-        if: ${{ secrets.TEAM_ID != '' && secrets.TEAM_ID != '' }}
+      - name: 打包未签名 IPA
         run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.APPLE_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision 2>/dev/null || true
-
-      - name: Archive & Export IPA
-        if: ${{ secrets.TEAM_ID != '' && secrets.CODE_SIGN_IDENTITY != '' }}
-        run: |
-          xcodebuild archive \
-            -project WalletApp.xcodeproj \
-            -scheme WalletApp \
-            -sdk iphoneos \
-            -configuration Release \
-            -archivePath Build/WalletApp.xcarchive \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="${{ secrets.CODE_SIGN_IDENTITY }}" \
-            PROVISIONING_PROFILE_SPECIFIER="${{ secrets.PROVISIONING_PROFILE }}" \
-            DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}" \
-            2>&1
-
-          mkdir -p Build/IPA
-          xcodebuild -exportArchive \
-            -archivePath Build/WalletApp.xcarchive \
-            -exportPath Build/IPA \
-            -exportOptionsPlist .github/ExportOptions.plist \
-            2>&1
+          mkdir -p Build/IPA/Payload
+          cp -r Build/DD/Build/Products/Release-iphoneos/WalletApp.app Build/IPA/Payload/
+          cd Build/IPA
+          zip -r WalletApp.ipa Payload/
+          echo "IPA size:"
+          ls -lh WalletApp.ipa
 
       - name: Upload IPA
-        if: ${{ secrets.TEAM_ID != '' && secrets.CODE_SIGN_IDENTITY != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: WalletApp-IPA
-          path: Build/IPA/*.ipa
+          name: WalletApp-未签名IPA
+          path: Build/IPA/WalletApp.ipa
           compression-level: 0
