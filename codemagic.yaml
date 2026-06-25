@@ -8,8 +8,6 @@
       vars:
         APP_ID: com.walletapp.ios
         APP_NAME: WalletApp
-      groups:
-        - app_store_credentials
     scripts:
       - name: 安装 XcodeGen
         script: brew install xcodegen
