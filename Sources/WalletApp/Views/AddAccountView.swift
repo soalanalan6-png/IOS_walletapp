@@ -40,7 +40,7 @@ struct AddAccountView: View {
                         VStack(spacing: 0) {
                             FormSection(title: "基本信息") {
                                 FormRow(label: "名称") {
-                                    TextField("输入账户名称", text: $name)
+                                    TextField("账户名称", text: $name)
                                         .multilineTextAlignment(.trailing)
                                         .foregroundColor(.white)
                                 }
@@ -54,12 +54,7 @@ struct AddAccountView: View {
                                         ForEach(AccountType.allCases) { type in
                                             Label(type.rawValue, systemImage: type.icon).tag(type)
                                         }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+                                    }
                                     .pickerStyle(.menu)
                                     .tint(Color(red: 0.3, green: 0.6, blue: 1.0))
                                 }
@@ -81,12 +76,7 @@ struct AddAccountView: View {
                                         ForEach(Currency.allCases) { c in
                                             Text("\(c.flag) \(c.rawValue)").tag(c)
                                         }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+                                    }
                                     .pickerStyle(.menu)
                                     .tint(Color(red: 0.3, green: 0.6, blue: 1.0))
                                 }
@@ -111,12 +101,7 @@ struct AddAccountView: View {
                                             .multilineTextAlignment(.trailing)
                                             .foregroundColor(.white)
                                     }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+                                }
                             }
                             
                             if type == .cryptoWallet {
@@ -136,12 +121,7 @@ struct AddAccountView: View {
                                             .foregroundColor(.white)
                                             .font(.caption)
                                     }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+                                }
                             }
                             
                             FormSection(title: "备注") {
@@ -149,21 +129,11 @@ struct AddAccountView: View {
                                     .frame(minHeight: 60)
                                     .colorScheme(.dark)
                             }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+                        }
                     }
                     .padding(.vertical)
                 }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+            }
             .navigationTitle("添加账户")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -176,20 +146,10 @@ struct AddAccountView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(Color(red: 0.3, green: 0.6, blue: 1.0))
                 }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+            }
             .preferredColorScheme(.dark)
         }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+    }
     
     private func addAccount() {
         let account = Account(
@@ -207,15 +167,10 @@ struct AddAccountView: View {
         vm.addAccount(account)
         dismiss()
     }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+}
 
 // MARK: - 实时卡片预览
-struct AddCardPreview: View {
+struct LiveCardPreview: View {
     let name: String
     let type: AccountType
     let balance: Double
@@ -246,12 +201,7 @@ struct AddCardPreview: View {
             Color(red: 0.2, green: 0.08, blue: 0.3)
         ]
         }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+    }
     
     var body: some View {
         ZStack {
@@ -291,17 +241,20 @@ struct AddCardPreview: View {
                         Text(obfuscatedCard)
                             .font(.system(.title3, design: .monospaced))
                             .foregroundColor(.white)
-                    }
                     } else {
                         Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
+                            .font(.caption2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Capsule())
                             .foregroundColor(.white.opacity(0.8))
                     }
+                }
                 
                 Spacer()
                 
-                Text(cardholderName.isEmpty ? "持卡人" : cardholderName.uppercased())
+                Text(cardholderName.isEmpty ? "持卡人姓名" : cardholderName.uppercased())
                     .font(.system(.headline, design: .rounded, weight: .medium))
                     .foregroundColor(cardholderName.isEmpty ? .white.opacity(0.4) : .white)
                 
@@ -318,12 +271,7 @@ struct AddCardPreview: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Capsule())
                 }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
+            }
             .padding(20)
         }
         .aspectRatio(1.56, contentMode: .fit)
@@ -336,11 +284,5 @@ struct AddCardPreview: View {
         }
         return cardNumber
     }
-                    } else {
-                        Text(type.rawValue)
-                            .font(.caption2).padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(.ultraThinMaterial).clipShape(Capsule())
-                            .foregroundColor(.white.opacity(0.8))
-                    }
-
+}
 
