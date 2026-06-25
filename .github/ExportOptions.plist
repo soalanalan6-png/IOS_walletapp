@@ -5,11 +5,9 @@
     <key>method</key>
     <string>development</string>
     <key>signingStyle</key>
-    <string>manual</string>
+    <string>automatic</string>
     <key>stripSwiftSymbols</key>
     <true/>
-    <key>teamID</key>
-    <string>${{ secrets.TEAM_ID }}</string>
     <key>uploadBitcode</key>
     <false/>
     <key>compileBitcode</key>
