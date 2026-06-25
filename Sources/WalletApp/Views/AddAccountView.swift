@@ -48,10 +48,7 @@ struct AddAccountView: View {
                             
                             AddFormPicker(label: "类型", icon: "creditcard.fill", selection: $type) {
                                 ForEach(AccountType.allCases) { t in
-                                    HStack {
-                                        Image(systemName: t.icon)
-                                        Text(t.rawValue)
-                                    }.tag(t)
+                                    Label(t.rawValue, systemImage: t.icon).tag(t)
                                 }
                             }
                             
@@ -364,3 +361,4 @@ struct AddFormPicker<SelectionValue: Hashable, Content: View>: View {
         }
     }
 }
+
