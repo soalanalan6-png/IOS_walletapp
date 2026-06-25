@@ -237,11 +237,10 @@ struct LiveCardPreview: View {
                         .font(.title2)
                         .foregroundColor(.white)
                     Spacer()
-                    if !cardNumber.isEmpty {
-                        Text(obfuscatedCard)
+                    Text(obfuscatedCard)
                             .font(.system(.title3, design: .monospaced))
                             .foregroundColor(.white)
-                    } else {
+                            .opacity(cardNumber.isEmpty ? 0 : 1)
                         Text(type.rawValue)
                             .font(.caption2)
                             .padding(.horizontal, 8)
@@ -249,7 +248,7 @@ struct LiveCardPreview: View {
                             .background(.ultraThinMaterial)
                             .clipShape(Capsule())
                             .foregroundColor(.white.opacity(0.8))
-                    }
+                            .opacity(cardNumber.isEmpty ? 1 : 0)
                 }
                 
                 Spacer()
