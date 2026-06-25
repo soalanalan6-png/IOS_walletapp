@@ -22,16 +22,21 @@ jobs:
       - name: Generate Xcode Project
         run: xcodegen generate
 
-      - name: List available signing certs
-        run: security find-identity -v -p codesigning
-
-      - name: Install Provisioning Profile
+      # 第一步：不签名编译，验证代码正确
+      - name: Build Test (无签名)
         run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.APPLE_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision 2>/dev/null || true
-          echo "Profile done"
+          xcodebuild build \
+            -project WalletApp.xcodeproj \
+            -scheme WalletApp \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1
+        continue-on-error: false
 
-      - name: Build & Archive
+      # 第二步：Archive（需要签名证书）
+      - name: Archive & Export IPA
+        if: ${{ secrets.TEAM_ID != '' }}
         run: |
           xcodebuild archive \
             -project WalletApp.xcodeproj \
@@ -42,12 +47,9 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="${{ secrets.CODE_SIGN_IDENTITY }}" \
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.PROVISIONING_PROFILE }}" \
-            OTHER_CODE_SIGN_FLAGS="--deep" \
             DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}" \
             2>&1
 
-      - name: Export IPA
-        run: |
           mkdir -p Build/IPA
           xcodebuild -exportArchive \
             -archivePath Build/WalletApp.xcarchive \
@@ -56,6 +58,7 @@ jobs:
             2>&1
 
       - name: Upload IPA
+        if: ${{ secrets.TEAM_ID != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: WalletApp-IPA
