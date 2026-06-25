@@ -1,0 +1,61 @@
+﻿workflows:
+  ios-build:
+    name: Build WalletApp IPA
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic  # 关联 Apple ID 后自动签名
+
+    environment:
+      ios:
+        xcode_version: "16.0"
+      vars:
+        APP_ID: com.walletapp.ios
+        APP_NAME: WalletApp
+      groups:
+        - appstore_credentials  # 在 Codemagic UI 里设置
+
+    scripts:
+      - name: 安装 XcodeGen
+        script: brew install xcodegen
+
+      - name: 生成 Xcode 项目
+        script: xcodegen generate
+
+      - name: 编译
+        script: |
+          xcodebuild build \
+            -project WalletApp.xcodeproj \
+            -scheme WalletApp \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM=
+
+      - name: Archive
+        script: |
+          xcodebuild archive \
+            -project WalletApp.xcodeproj \
+            -scheme WalletApp \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath /tmp/xcarchive/WalletApp.xcarchive \
+            | xcpretty
+
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath /tmp/xcarchive/WalletApp.xcarchive \
+            -exportPath /tmp/ipa \
+            -exportOptionsPlist .github/ExportOptions.plist
+
+    artifacts:
+      - /tmp/ipa/*.ipa
+      - /tmp/xcarchive/*.xcarchive
+
+    publishing:
+      email:
+        recipients:
+          - soalan10617@gmail.com
+      # 也可以发布到 App Center / TestFlight
