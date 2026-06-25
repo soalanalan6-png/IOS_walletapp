@@ -270,7 +270,7 @@ struct LiveCardPreview: View {
             }
             .padding(20)
         }
-        .frame(height: 200)
+        .aspectRatio(1.56, contentMode: .fit)
     }
     
     var obfuscatedCard: String {
