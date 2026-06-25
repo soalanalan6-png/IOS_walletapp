@@ -9,7 +9,7 @@ struct AccountDetailView: View {
     
     var body: some View {
         ZStack {
-            Color(red: 0.06, green: 0.07, blue: 0.13)
+            Color(red: 0.04, green: 0.05, blue: 0.1)
                 .ignoresSafeArea()
             
             ScrollView {
@@ -151,42 +151,63 @@ struct AccountDetailView: View {
     }
 }
 
-// 卡片预览组件
+// MARK: - 卡片预览组件
 struct CardPreview: View {
     let account: Account
     
     var gradientColors: [Color] {
         switch account.type {
-        case .bankCard: return [Color(red: 0.15, green: 0.25, blue: 0.55), Color(red: 0.08, green: 0.12, blue: 0.35)]
-        case .creditCard: return [Color(red: 0.45, green: 0.15, blue: 0.25), Color(red: 0.3, green: 0.08, blue: 0.15)]
-        case .cryptoWallet: return [Color(red: 0.15, green: 0.4, blue: 0.35), Color(red: 0.08, green: 0.25, blue: 0.2)]
-        case .cash: return [Color(red: 0.2, green: 0.45, blue: 0.2), Color(red: 0.1, green: 0.3, blue: 0.1)]
-        case .other: return [Color(red: 0.3, green: 0.15, blue: 0.45), Color(red: 0.2, green: 0.08, blue: 0.3)]
+        case .bankCard: return [
+            Color(red: 0.18, green: 0.28, blue: 0.58),
+            Color(red: 0.08, green: 0.12, blue: 0.35)
+        ]
+        case .creditCard: return [
+            Color(red: 0.48, green: 0.18, blue: 0.28),
+            Color(red: 0.3, green: 0.08, blue: 0.15)
+        ]
+        case .cryptoWallet: return [
+            Color(red: 0.18, green: 0.42, blue: 0.38),
+            Color(red: 0.08, green: 0.25, blue: 0.2)
+        ]
+        case .cash: return [
+            Color(red: 0.22, green: 0.48, blue: 0.22),
+            Color(red: 0.1, green: 0.3, blue: 0.1)
+        ]
+        case .other: return [
+            Color(red: 0.32, green: 0.18, blue: 0.48),
+            Color(red: 0.2, green: 0.08, blue: 0.3)
+        ]
         }
     }
     
     var body: some View {
         ZStack {
+            // 背景渐变
             RoundedRectangle(cornerRadius: 24)
                 .fill(LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing))
+            
+            // 玻璃覆盖层
+            RoundedRectangle(cornerRadius: 24)
+                .fill(
+                    LinearGradient(
+                        colors: [.white.opacity(0.1), .white.opacity(0.02)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(
                     ZStack {
-                        Circle()
-                            .fill(.white.opacity(0.08))
-                            .frame(width: 200, height: 200)
-                            .offset(x: 80, y: -60)
-                        Circle()
-                            .fill(.white.opacity(0.05))
-                            .frame(width: 150, height: 150)
-                            .offset(x: -60, y: 80)
+                        Circle().fill(.white.opacity(0.08)).frame(width: 200, height: 200).offset(x: 80, y: -60)
+                        Circle().fill(.white.opacity(0.04)).frame(width: 150, height: 150).offset(x: -60, y: 80)
                     }
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 24)
-                        .stroke(.white.opacity(0.15), lineWidth: 1)
+                        .stroke(.white.opacity(0.18), lineWidth: 1)
                 )
                 .shadow(color: gradientColors[0].opacity(0.5), radius: 40, x: 0, y: 15)
             
+            // 内容
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Image(systemName: account.type.icon)
@@ -194,7 +215,7 @@ struct CardPreview: View {
                         .foregroundColor(.white)
                     Spacer()
                     if !account.cardNumber.isEmpty {
-                        Text(String(repeating: "●", count: 4))
+                        Text(String(repeating: "\u{2022}", count: 4))
                             .font(.title3)
                             .foregroundColor(.white.opacity(0.6))
                         + Text(account.cardNumber.suffix(4))
@@ -235,7 +256,7 @@ struct CardPreview: View {
     }
 }
 
-// 表单组件
+// MARK: - 表单组件
 struct FormSection<Content: View>: View {
     let title: String
     @ViewBuilder let content: Content
@@ -252,7 +273,7 @@ struct FormSection<Content: View>: View {
             content
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(Color(red: 0.12, green: 0.13, blue: 0.2))
+                .background(Color(red: 0.1, green: 0.11, blue: 0.18))
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding(.horizontal)
         }

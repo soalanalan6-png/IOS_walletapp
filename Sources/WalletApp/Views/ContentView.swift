@@ -8,7 +8,7 @@ struct ContentView: View {
     init() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 15/255, green: 15/255, blue: 25/255, alpha: 1)
+        appearance.backgroundColor = UIColor(red: 8/255, green: 10/255, blue: 20/255, alpha: 1)
         appearance.shadowColor = .clear
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance

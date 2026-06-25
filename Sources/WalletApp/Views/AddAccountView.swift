@@ -19,7 +19,7 @@ struct AddAccountView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 0.06, green: 0.07, blue: 0.13)
+                Color(red: 0.04, green: 0.05, blue: 0.1)
                     .ignoresSafeArea()
                 
                 ScrollView {
@@ -173,6 +173,7 @@ struct AddAccountView: View {
     }
 }
 
+// MARK: - 实时卡片预览
 struct LiveCardPreview: View {
     let name: String
     let type: AccountType
@@ -183,30 +184,57 @@ struct LiveCardPreview: View {
     
     var gradientColors: [Color] {
         switch type {
-        case .bankCard: return [Color(red: 0.15, green: 0.25, blue: 0.55), Color(red: 0.08, green: 0.12, blue: 0.35)]
-        case .creditCard: return [Color(red: 0.45, green: 0.15, blue: 0.25), Color(red: 0.3, green: 0.08, blue: 0.15)]
-        case .cryptoWallet: return [Color(red: 0.15, green: 0.4, blue: 0.35), Color(red: 0.08, green: 0.25, blue: 0.2)]
-        case .cash: return [Color(red: 0.2, green: 0.45, blue: 0.2), Color(red: 0.1, green: 0.3, blue: 0.1)]
-        case .other: return [Color(red: 0.3, green: 0.15, blue: 0.45), Color(red: 0.2, green: 0.08, blue: 0.3)]
+        case .bankCard: return [
+            Color(red: 0.18, green: 0.28, blue: 0.58),
+            Color(red: 0.08, green: 0.12, blue: 0.35)
+        ]
+        case .creditCard: return [
+            Color(red: 0.48, green: 0.18, blue: 0.28),
+            Color(red: 0.3, green: 0.08, blue: 0.15)
+        ]
+        case .cryptoWallet: return [
+            Color(red: 0.18, green: 0.42, blue: 0.38),
+            Color(red: 0.08, green: 0.25, blue: 0.2)
+        ]
+        case .cash: return [
+            Color(red: 0.22, green: 0.48, blue: 0.22),
+            Color(red: 0.1, green: 0.3, blue: 0.1)
+        ]
+        case .other: return [
+            Color(red: 0.32, green: 0.18, blue: 0.48),
+            Color(red: 0.2, green: 0.08, blue: 0.3)
+        ]
         }
     }
     
     var body: some View {
         ZStack {
+            // 背景渐变
             RoundedRectangle(cornerRadius: 24)
                 .fill(LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing))
+            
+            // 玻璃覆盖层
+            RoundedRectangle(cornerRadius: 24)
+                .fill(
+                    LinearGradient(
+                        colors: [.white.opacity(0.1), .white.opacity(0.02)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(
                     ZStack {
                         Circle().fill(.white.opacity(0.08)).frame(width: 200, height: 200).offset(x: 80, y: -60)
-                        Circle().fill(.white.opacity(0.05)).frame(width: 150, height: 150).offset(x: -60, y: 80)
+                        Circle().fill(.white.opacity(0.04)).frame(width: 150, height: 150).offset(x: -60, y: 80)
                     }
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 24)
-                        .stroke(.white.opacity(0.15), lineWidth: 1)
+                        .stroke(.white.opacity(0.18), lineWidth: 1)
                 )
                 .shadow(color: gradientColors[0].opacity(0.5), radius: 40, x: 0, y: 15)
             
+            // 内容
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Image(systemName: type.icon)
@@ -248,7 +276,7 @@ struct LiveCardPreview: View {
     var obfuscatedCard: String {
         let clean = cardNumber.filter { $0.isNumber }
         if clean.count >= 4 {
-            return String(repeating: "● ", count: 3) + String(clean.suffix(4))
+            return "\u{2022}\u{2022}\u{2022}\u{2022}  " + String(clean.suffix(4))
         }
         return cardNumber
     }
