@@ -8,6 +8,8 @@
       vars:
         APP_ID: com.walletapp.ios
         APP_NAME: WalletApp
+      groups:
+        - app_store_credentials
     scripts:
       - name: 安装 XcodeGen
         script: brew install xcodegen
@@ -20,16 +22,20 @@
             -scheme WalletApp \
             -sdk iphoneos \
             -configuration Release \
-            -archivePath /tmp/xcarchive/WalletApp.xcarchive | xcpretty
+            -archivePath /tmp/xcarchive/WalletApp.xcarchive \
+            -allowProvisioningUpdates \
+            DEVELOPMENT_TEAM= \
+            2>&1
       - name: 导出 IPA
         script: |
           xcodebuild -exportArchive \
             -archivePath /tmp/xcarchive/WalletApp.xcarchive \
             -exportPath /tmp/ipa \
-            -exportOptionsPlist .github/ExportOptions.plist
+            -exportOptionsPlist .github/ExportOptions.plist \
+            -allowProvisioningUpdates \
+            2>&1
     artifacts:
       - /tmp/ipa/*.ipa
-      - /tmp/xcarchive/*.xcarchive
     publishing:
       email:
         recipients:
