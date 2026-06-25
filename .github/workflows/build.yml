@@ -22,21 +22,27 @@ jobs:
       - name: Generate Xcode Project
         run: xcodegen generate
 
-      # 第一步：不签名编译，验证代码正确
-      - name: Build Test (无签名)
+      # 不签名编译验证
+      - name: Build Test
         run: |
           xcodebuild build \
             -project WalletApp.xcodeproj \
             -scheme WalletApp \
             -sdk iphonesimulator \
             -configuration Debug \
+            CODE_SIGN_STYLE=Manual \
             CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM= \
             2>&1
-        continue-on-error: false
 
-      # 第二步：Archive（需要签名证书）
+      - name: Install Profile
+        if: ${{ secrets.TEAM_ID != '' && secrets.TEAM_ID != '' }}
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.APPLE_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision 2>/dev/null || true
+
       - name: Archive & Export IPA
-        if: ${{ secrets.TEAM_ID != '' }}
+        if: ${{ secrets.TEAM_ID != '' && secrets.CODE_SIGN_IDENTITY != '' }}
         run: |
           xcodebuild archive \
             -project WalletApp.xcodeproj \
@@ -58,7 +64,7 @@ jobs:
             2>&1
 
       - name: Upload IPA
-        if: ${{ secrets.TEAM_ID != '' }}
+        if: ${{ secrets.TEAM_ID != '' && secrets.CODE_SIGN_IDENTITY != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: WalletApp-IPA
