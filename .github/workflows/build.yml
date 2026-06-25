@@ -3,7 +3,7 @@
 on:
   push:
     branches: [main]
-  workflow_dispatch:  # 手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,34 +13,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 选择 Xcode 版本
+      - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: 显示 Xcode 版本
-        run: xcodebuild -version
+      - name: Install XcodeGen
+        run: brew install xcodegen
 
-      - name: 创建 Xcode 项目
-        run: |
-          mkdir -p BuildTemp
-          cd BuildTemp
-          # 用 xcodebuild 通过 Package.swift 生成 xcodeproj
-          xcodebuild -resolvePackageDependencies -project ../Package.swift -destination "generic/platform=iOS" 2>&1 || true
-          # 直接用 swift package generate-xcodeproj
-          cd ..
-          swift package generate-xcodeproj --output . 2>/dev/null || true
+      - name: Generate Xcode Project
+        run: xcodegen generate
 
-      - name: 列出可用签名证书
+      - name: List available signing certs
         run: security find-identity -v -p codesigning
 
-      - name: 安装描述文件
+      - name: Install Provisioning Profile
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo '${{ secrets.APPLE_PROFILE_BASE64 }}' | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision 2>/dev/null || true
-          echo "描述文件安装完成"
+          echo "${{ secrets.APPLE_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision 2>/dev/null || true
+          echo "Profile done"
 
-      - name: 编译 Archive
+      - name: Build & Archive
         run: |
           xcodebuild archive \
+            -project WalletApp.xcodeproj \
             -scheme WalletApp \
             -sdk iphoneos \
             -configuration Release \
@@ -49,9 +43,10 @@ jobs:
             CODE_SIGN_IDENTITY="${{ secrets.CODE_SIGN_IDENTITY }}" \
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.PROVISIONING_PROFILE }}" \
             OTHER_CODE_SIGN_FLAGS="--deep" \
+            DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}" \
             2>&1
 
-      - name: 导出 IPA
+      - name: Export IPA
         run: |
           mkdir -p Build/IPA
           xcodebuild -exportArchive \
@@ -60,7 +55,7 @@ jobs:
             -exportOptionsPlist .github/ExportOptions.plist \
             2>&1
 
-      - name: 上传 IPA
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: WalletApp-IPA
