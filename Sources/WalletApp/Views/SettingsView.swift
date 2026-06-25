@@ -1,7 +1,7 @@
 ﻿import SwiftUI
 
 struct SettingsView: View {
-    
+    @State private var showingExport = false
     @State private var showingClearAlert = false
     
     var body: some View {
@@ -209,4 +209,3 @@ struct SettingsRow: View {
         }
     }
 }
-
