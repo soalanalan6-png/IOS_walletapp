@@ -36,99 +36,94 @@ struct AddAccountView: View {
                         .offset(y: animateCard ? 0 : -40)
                         .opacity(animateCard ? 1 : 0)
                         
-                        // 基本信息
-                        NewFormSection(title: "基本信息", icon: "info.circle.fill") {
-                            NewFormField(label: "名称", icon: "square.and.pencil") {
-                                TextField("输入账户名称", text: $name)
-                                    .multilineTextAlignment(.trailing)
-                                    .foregroundColor(.white)
-                                    .font(.subheadline)
-                            }
-                            NewFormField(label: "类型", icon: "creditcard.fill") {
-                                Picker("", selection: $type) {
-                                    ForEach(AccountType.allCases) { t in
-                                        Label(t.rawValue, systemImage: t.icon).tag(t)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .tint(Color(red: 0.3, green: 0.6, blue: 1.0))
-                                .labelsHidden()
-                            }
-                            NewFormField(label: "余额", icon: "dollarsign.circle.fill") {
-                                TextField("0.00", value: $balance, format: .number)
-                                    .keyboardType(.decimalPad)
-                                    .multilineTextAlignment(.trailing)
-                                    .foregroundColor(balance >= 0 ? Color(red: 0.3, green: 0.85, blue: 0.6) : Color(red: 1.0, green: 0.35, blue: 0.35))
-                                    .font(.subheadline)
-                            }
-                            NewFormField(label: "货币", icon: "globe") {
-                                Picker("", selection: $currency) {
-                                    ForEach(Currency.allCases) { c in
-                                        Text("\(c.flag) \(c.rawValue) (\(c.symbol))").tag(c)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .tint(Color(red: 0.3, green: 0.6, blue: 1.0))
-                                .labelsHidden()
-                            }
-                        }
-                        
-                        // 卡片信息
-                        if type == .bankCard || type == .creditCard {
-                            NewFormSection(title: "卡片信息", icon: "creditcard.and.123") {
-                                NewFormField(label: "卡号", icon: "number") {
-                                    TextField("输入卡号", text: $cardNumber)
-                                        .multilineTextAlignment(.trailing)
-                                        .foregroundColor(.white)
-                                        .font(.system(.subheadline, design: .monospaced))
-                                }
-                                NewFormField(label: "持卡人", icon: "person.fill") {
-                                    TextField("持卡人姓名", text: $cardholderName)
+                        VStack(spacing: 0) {
+                            FormSection(title: "基本信息") {
+                                FormRow(label: "名称") {
+                                    TextField("输入账户名称", text: $name)
                                         .multilineTextAlignment(.trailing)
                                         .foregroundColor(.white)
                                         .font(.subheadline)
                                 }
-                                NewFormField(label: "银行", icon: "building.columns.fill") {
-                                    TextField("银行名称", text: $bankName)
+                                
+                                HStack {
+                                    Text("类型").foregroundColor(.white.opacity(0.8)).font(.subheadline)
+                                    Spacer()
+                                    Picker("", selection: $type) {
+                                        ForEach(AccountType.allCases) { t in
+                                            Label(t.rawValue, systemImage: t.icon).tag(t)
+                                        }
+                                    }
+                                    .pickerStyle(.menu).tint(Color(red: 0.3, green: 0.6, blue: 1.0))
+                                }
+                                .padding(.vertical, 4)
+                                
+                                FormRow(label: "余额") {
+                                    TextField("0.00", value: $balance, format: .number)
+                                        .keyboardType(.decimalPad)
                                         .multilineTextAlignment(.trailing)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(balance >= 0 ? Color(red: 0.3, green: 0.85, blue: 0.6) : Color(red: 1.0, green: 0.35, blue: 0.35))
                                         .font(.subheadline)
                                 }
-                            }
-                        }
-                        
-                        // 钱包信息
-                        if type == .cryptoWallet {
-                            NewFormSection(title: "钱包信息", icon: "bitcoinsign.circle.fill") {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("助记词")
-                                        .font(.caption)
-                                        .foregroundColor(.white.opacity(0.4))
-                                    TextEditor(text: $mnemonic)
-                                        .frame(minHeight: 80)
-                                        .font(.system(.subheadline, design: .monospaced))
-                                        .colorScheme(.dark)
-                                        .scrollContentBackground(.hidden)
-                                        .background(Color(red: 0.06, green: 0.07, blue: 0.14))
-                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                
+                                HStack {
+                                    Text("货币").foregroundColor(.white.opacity(0.8)).font(.subheadline)
+                                    Spacer()
+                                    Picker("", selection: $currency) {
+                                        ForEach(Currency.allCases) { c in
+                                            Text("\(c.flag) \(c.rawValue) (\(c.symbol))").tag(c)
+                                        }
+                                    }
+                                    .pickerStyle(.menu).tint(Color(red: 0.3, green: 0.6, blue: 1.0))
                                 }
-                                NewFormField(label: "地址", icon: "link") {
-                                    TextField("钱包地址", text: $walletAddress)
-                                        .multilineTextAlignment(.trailing)
-                                        .foregroundColor(.white)
-                                        .font(.caption)
+                                .padding(.vertical, 4)
+                            }
+                            
+                            if type == .bankCard || type == .creditCard {
+                                FormSection(title: "卡片信息") {
+                                    FormRow(label: "卡号") {
+                                        TextField("输入卡号", text: $cardNumber)
+                                            .multilineTextAlignment(.trailing)
+                                            .foregroundColor(.white)
+                                            .font(.system(.subheadline, design: .monospaced))
+                                    }
+                                    FormRow(label: "持卡人") {
+                                        TextField("持卡人姓名", text: $cardholderName)
+                                            .multilineTextAlignment(.trailing)
+                                            .foregroundColor(.white)
+                                            .font(.subheadline)
+                                    }
+                                    FormRow(label: "银行") {
+                                        TextField("银行名称", text: $bankName)
+                                            .multilineTextAlignment(.trailing)
+                                            .foregroundColor(.white)
+                                            .font(.subheadline)
+                                    }
                                 }
                             }
-                        }
-                        
-                        // 备注
-                        NewFormSection(title: "备注", icon: "note.text") {
-                            TextEditor(text: $notes)
-                                .frame(minHeight: 70)
-                                .colorScheme(.dark)
-                                .scrollContentBackground(.hidden)
-                                .background(Color(red: 0.06, green: 0.07, blue: 0.14))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            
+                            if type == .cryptoWallet {
+                                FormSection(title: "钱包信息") {
+                                    VStack(alignment: .leading) {
+                                        Text("助记词").font(.caption).foregroundColor(.white.opacity(0.5))
+                                        TextEditor(text: $mnemonic)
+                                            .frame(minHeight: 80)
+                                            .font(.system(.body, design: .monospaced))
+                                            .colorScheme(.dark)
+                                    }
+                                    FormRow(label: "地址") {
+                                        TextField("钱包地址", text: $walletAddress)
+                                            .multilineTextAlignment(.trailing)
+                                            .foregroundColor(.white)
+                                            .font(.caption)
+                                    }
+                                }
+                            }
+                            
+                            FormSection(title: "备注") {
+                                TextEditor(text: $notes)
+                                    .frame(minHeight: 60)
+                                    .colorScheme(.dark)
+                            }
                         }
                     }
                     .padding(.vertical, 16)
@@ -243,75 +238,5 @@ struct AddCardPreview: View {
             .padding(18)
         }
         .aspectRatio(1.56, contentMode: .fit)
-    }
-}
-
-// MARK: - 表单分区
-struct NewFormSection<Content: View>: View {
-    let title: String
-    let icon: String
-    let content: Content
-    
-    init(title: String, icon: String, @ViewBuilder content: () -> Content) {
-        self.title = title
-        self.icon = icon
-        self.content = content()
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 6) {
-                Image(systemName: icon).font(.caption).foregroundColor(Color(red: 0.3, green: 0.6, blue: 1.0))
-                Text(title).font(.caption).foregroundColor(Color(red: 0.3, green: 0.6, blue: 1.0))
-            }
-            .padding(.horizontal, 4)
-            
-            VStack(spacing: 0) { content }
-                .background(Color(red: 0.1, green: 0.11, blue: 0.18))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.05), lineWidth: 1))
-        }
-        .padding(.horizontal, 20)
-    }
-}
-
-// MARK: - 表单输入行
-struct NewFormField<Content: View>: View {
-    let label: String
-    let icon: String
-    let content: Content
-    var showDivider: Bool = true
-    
-    init(label: String, icon: String, showDivider: Bool = true, @ViewBuilder content: () -> Content) {
-        self.label = label
-        self.icon = icon
-        self.showDivider = showDivider
-        self.content = content()
-    }
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 10) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 7)
-                        .fill(Color(red: 0.3, green: 0.6, blue: 1.0).opacity(0.15))
-                        .frame(width: 28, height: 28)
-                    Image(systemName: icon)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color(red: 0.3, green: 0.6, blue: 1.0))
-                }
-                Text(label)
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.8))
-                Spacer()
-                content
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            
-            if showDivider {
-                Divider().background(.white.opacity(0.05)).padding(.leading, 52)
-            }
-        }
     }
 }
