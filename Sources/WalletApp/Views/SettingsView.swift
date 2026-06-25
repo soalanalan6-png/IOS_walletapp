@@ -3,6 +3,7 @@
 struct SettingsView: View {
     @State private var showingExport = false
     @State private var showingClearAlert = false
+    @AppStorage("biometric_enabled") private var biometricEnabled = false
     
     var body: some View {
         NavigationStack {
@@ -209,3 +210,4 @@ struct SettingsRow: View {
         }
     }
 }
+
