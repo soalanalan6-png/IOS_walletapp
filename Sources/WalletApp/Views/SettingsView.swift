@@ -1,4 +1,5 @@
-﻿import SwiftUI
+﻿import UIKit
+import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var accountVM: AccountViewModel
@@ -9,7 +10,7 @@ struct SettingsView: View {
     
     @State private var showClearAlert = false
     @State private var showCurrencyPicker = false
-    @State private var exportURL: URL?
+    @State private var exportFile: ExportFile?
     @State private var toastMessage = ""
     @State private var showToast = false
     
@@ -69,8 +70,8 @@ struct SettingsView: View {
                 }
             } message: { Text("此操作不可恢复。") }
             .sheet(isPresented: $showCurrencyPicker) { CurrencyPickerSheet(defaultRaw: $defaultCurrencyRaw, dismiss: { showCurrencyPicker = false }) }
-            .sheet(item: $exportURL) { url in
-                ShareSheet(items: [url])
+            .sheet(item: $exportFile) { file in
+                ShareSheet(items: [file.url])
             }
             .overlay(alignment: .bottom) {
                 if showToast {
@@ -107,7 +108,7 @@ struct SettingsView: View {
         if let json = try? JSONSerialization.data(withJSONObject: data, options: .prettyPrinted) {
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("wallet_export.json")
             try? json.write(to: url)
-            exportURL = url
+            exportFile = ExportFile(url: url)
         }
     }
     
@@ -159,6 +160,11 @@ struct CurrencyPickerSheet: View {
             .preferredColorScheme(.dark)
         }
     }
+}
+
+struct ExportFile: Identifiable {
+    let id = UUID()
+    let url: URL
 }
 
 // MARK: - 分享Sheet
@@ -238,3 +244,10 @@ struct SettingsSection<Content: View>: View {
         }
     }
 }
+
+
+
+
+
+
+
