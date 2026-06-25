@@ -253,23 +253,24 @@ struct LiveCardPreview: View {
                 
                 Spacer()
                 
-                Text(cardholderName.isEmpty ? "持卡人姓名" : cardholderName.uppercased())
+                Text(cardholderName.isEmpty ? "持卡人" : cardholderName.uppercased())
                     .font(.system(.headline, design: .rounded, weight: .medium))
                     .foregroundColor(cardholderName.isEmpty ? .white.opacity(0.4) : .white)
                 
-                HStack {
-                    Text(currency.symbol + String(format: "%.2f", balance))
-                        .font(.system(.title2, design: .rounded, weight: .bold))
+                Text(currency.symbol + String(format: "%.2f", balance))
+                        .font(.system(size: 28, design: .rounded, weight: .bold))
                         .foregroundColor(.white)
-                    Spacer()
-                    Text(currency.rawValue)
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.6))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
-                }
+                    HStack {
+                        Text(name).font(.caption2).foregroundColor(.white.opacity(0.5))
+                        Spacer()
+                        Text(currency.rawValue)
+                            .font(.caption2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Capsule())
+                            .foregroundColor(.white.opacity(0.8))
+                    }
             }
             .padding(20)
         }
