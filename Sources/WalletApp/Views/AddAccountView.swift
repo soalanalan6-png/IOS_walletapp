@@ -14,7 +14,7 @@ struct AddAccountView: View {
     @State private var mnemonic = ""
     @State private var walletAddress = ""
     @State private var notes = ""
-    @State private var cardOffset: CGFloat = 300
+    @State private var animateCard = false
     
     var body: some View {
         NavigationStack {
@@ -34,12 +34,8 @@ struct AddAccountView: View {
                             cardholderName: cardholderName
                         )
                         .padding(.horizontal)
-                        .offset(y: cardOffset)
-                        .onAppear {
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                cardOffset = 0
-                            }
-                        }
+                        .offset(y: animateCard ? 0 : -40).opacity(animateCard ? 1 : 0)
+                        .onAppear { withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) { animateCard = true } }
                         
                         VStack(spacing: 0) {
                             FormSection(title: "基本信息") {
@@ -281,3 +277,4 @@ struct LiveCardPreview: View {
         return cardNumber
     }
 }
+
