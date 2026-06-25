@@ -16,7 +16,9 @@ targets:
     type: application
     platform: iOS
     sources:
-      - Sources/WalletApp
+      - path: Sources/WalletApp
+        excludes:
+          - "Preview Content"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.walletapp.ios
