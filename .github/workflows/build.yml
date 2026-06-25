@@ -41,12 +41,10 @@ jobs:
           cp -r Build/DD/Build/Products/Release-iphoneos/WalletApp.app Build/IPA/Payload/
           cd Build/IPA
           zip -r WalletApp.ipa Payload/
-          echo "IPA size:"
-          ls -lh WalletApp.ipa
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: WalletApp-未签名IPA
+          name: WalletApp-IPA
           path: Build/IPA/WalletApp.ipa
           compression-level: 0
