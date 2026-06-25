@@ -257,19 +257,14 @@ struct LiveCardPreview: View {
                     .font(.system(.headline, design: .rounded, weight: .medium))
                     .foregroundColor(cardholderName.isEmpty ? .white.opacity(0.4) : .white)
                 
-                HStack {
-                    Text(currency.symbol + String(format: "%.2f", balance))
-                        .font(.system(.title2, design: .rounded, weight: .bold))
-                        .foregroundColor(.white)
-                    Spacer()
-                    Text(currency.rawValue)
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.6))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
-                }
+                VStack(alignment: .leading, spacing: 2) {
+                        Text(currency.symbol + String(format: "%.2f", balance))
+                            .font(.system(size: 28, design: .rounded, weight: .bold))
+                            .foregroundColor(.white)
+                        Text(name)
+                            .font(.caption2)
+                            .foregroundColor(.white.opacity(0.5))
+                    }
             }
             .padding(20)
         }
