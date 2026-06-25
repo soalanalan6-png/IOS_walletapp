@@ -13,17 +13,7 @@
         script: brew install xcodegen
       - name: 生成 Xcode 项目
         script: xcodegen generate
-      - name: 无签名编译验证
-        script: |
-          xcodebuild build \
-            -project WalletApp.xcodeproj \
-            -scheme WalletApp \
-            -sdk iphonesimulator \
-            -configuration Debug \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGNING_ALLOWED=NO \
-            DEVELOPMENT_TEAM=
-      - name: Archive & 导出 IPA
+      - name: 编译 & Archive
         script: |
           xcodebuild archive \
             -project WalletApp.xcodeproj \
@@ -31,13 +21,15 @@
             -sdk iphoneos \
             -configuration Release \
             -archivePath /tmp/xcarchive/WalletApp.xcarchive | xcpretty
-
+      - name: 导出 IPA
+        script: |
           xcodebuild -exportArchive \
             -archivePath /tmp/xcarchive/WalletApp.xcarchive \
             -exportPath /tmp/ipa \
             -exportOptionsPlist .github/ExportOptions.plist
     artifacts:
       - /tmp/ipa/*.ipa
+      - /tmp/xcarchive/*.xcarchive
     publishing:
       email:
         recipients:
